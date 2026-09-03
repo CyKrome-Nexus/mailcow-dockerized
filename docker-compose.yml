@@ -454,10 +454,22 @@ services:
         - "${HTTPS_BIND:-}:${HTTPS_PORT:-443}:${HTTPS_PORT:-443}"
         - "${HTTP_BIND:-}:${HTTP_PORT:-80}:${HTTP_PORT:-80}"
       restart: always
+      labels:
+        traefik.enable: "true"
+        traefik.docker.network: "dokploy-network"
+        traefik.http.routers.mailcow-web.entrypoints: "web"
+        traefik.http.routers.mailcow-web.rule: "Host(`${MAILCOW_HOSTNAME}`)"
+        traefik.http.routers.mailcow-web.middlewares: "redirect-to-https@file"
+        traefik.http.routers.mailcow-websecure.entrypoints: "websecure"
+        traefik.http.routers.mailcow-websecure.rule: "Host(`${MAILCOW_HOSTNAME}`)"
+        traefik.http.routers.mailcow-websecure.tls.certresolver: "letsencrypt"
+        traefik.http.services.mailcow-web.loadbalancer.server.port: "${HTTP_PORT:-8080}"
+        traefik.http.services.mailcow-websecure.loadbalancer.server.port: "${HTTP_PORT:-8080}"
       networks:
         mailcow-network:
           aliases:
             - nginx
+        dokploy-network: {}
 
     acme-mailcow:
       depends_on:
@@ -671,6 +683,8 @@ networks:
       config:
         - subnet: ${IPV4_NETWORK:-172.22.1}.0/24
         - subnet: ${IPV6_NETWORK:-fd4d:6169:6c63:6f77::/64}
+  dokploy-network:
+    external: true
 
 volumes:
   vmail-vol-1:
