@@ -460,11 +460,12 @@ services:
         traefik.http.routers.mailcow-web.entrypoints: "web"
         traefik.http.routers.mailcow-web.rule: "Host(`${MAILCOW_HOSTNAME}`)"
         traefik.http.routers.mailcow-web.middlewares: "redirect-to-https@file"
+        traefik.http.routers.mailcow-web.service: "mailcow-svc"
         traefik.http.routers.mailcow-websecure.entrypoints: "websecure"
         traefik.http.routers.mailcow-websecure.rule: "Host(`${MAILCOW_HOSTNAME}`)"
         traefik.http.routers.mailcow-websecure.tls.certresolver: "letsencrypt"
-        traefik.http.services.mailcow-web.loadbalancer.server.port: "${HTTP_PORT:-8080}"
-        traefik.http.services.mailcow-websecure.loadbalancer.server.port: "${HTTP_PORT:-8080}"
+        traefik.http.routers.mailcow-websecure.service: "mailcow-svc"
+        traefik.http.services.mailcow-svc.loadbalancer.server.port: "${HTTP_PORT:-8080}"
       networks:
         mailcow-network:
           aliases:
