@@ -5237,6 +5237,10 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
           $mailboxdata['messages'] = $row['messages'];
           $mailboxdata['attributes'] = json_decode($row['attributes'], true);
           $mailboxdata['custom_attributes'] = json_decode($row['custom_attributes'], true);
+          $mailboxdata['avatar_url'] = null;
+          if (!empty($GLOBALS['avatar_r2_public_domain']) && !empty($mailboxdata['attributes']['avatar_updated_at'])) {
+            $mailboxdata['avatar_url'] = 'https://' . $GLOBALS['avatar_r2_public_domain'] . '/avatars/' . md5(strtolower($row['username'])) . '.webp?v=' . $mailboxdata['attributes']['avatar_updated_at'];
+          }
           $mailboxdata['quota_used'] = intval($row['bytes']);
           $mailboxdata['percent_in_use'] = ($row['quota'] == 0) ? '- ' : round((intval($row['bytes']) / intval($row['quota'])) * 100);
           $mailboxdata['created'] = $row['created'];

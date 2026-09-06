@@ -21,6 +21,15 @@
               </button>
             </div>
             <div id="collapse-tab-medit" class="card-body collapse show" data-bs-parent="#mailbox-content">
+                {% if avatar_configured %}
+                <div class="d-flex align-items-center mb-3">
+                  <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                       style="width:56px;height:56px;background:#e9ecef;overflow:hidden;{% if result.avatar_url %}background-image:url('{{ result.avatar_url }}');background-size:cover;background-position:center;{% endif %}">
+                    {% if not result.avatar_url %}<i class="bi bi-person-fill" style="font-size:1.5rem;color:#adb5bd;"></i>{% endif %}
+                  </div>
+                  <div class="ms-3 text-muted small">{{ lang.edit.avatar_readonly|default('Profile photo — set by the mailbox owner in their own account settings.') }}</div>
+                </div>
+                {% endif %}
                 <form class="form-horizontal" data-id="editmailbox" role="form" method="post">
                   <input type="hidden" value="default" name="sender_acl">
                   <input type="hidden" value="0" name="force_pw_update">

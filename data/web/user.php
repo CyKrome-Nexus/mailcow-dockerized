@@ -53,8 +53,12 @@ foreach (app_passwd("get") as $app_password)
     }
 }
 
+global $avatar_r2_public_domain;
+
 $template = 'user.twig';
 $template_data = [
+  'avatar_configured' => !empty($avatar_r2_public_domain),
+  'avatar_url' => $mailboxdata['avatar_url'],
   'acl' => $_SESSION['acl'],
   'acl_json' => json_encode($_SESSION['acl']),
   'user_spam_score' => mailbox('get', 'spam_score', $username),

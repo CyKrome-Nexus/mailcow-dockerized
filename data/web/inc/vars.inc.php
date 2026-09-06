@@ -19,6 +19,13 @@ $database_name = getenv('DBNAME');
 $mailcow_hostname = getenv('MAILCOW_HOSTNAME');
 $default_pass_scheme = getenv('MAILCOW_PASS_SCHEME');
 
+// Avatar storage (Cloudflare R2 / S3-compatible)
+$avatar_r2_account_id = getenv('AVATAR_R2_ACCOUNT_ID');
+$avatar_r2_access_key_id = getenv('AVATAR_R2_ACCESS_KEY_ID');
+$avatar_r2_secret_access_key = getenv('AVATAR_R2_SECRET_ACCESS_KEY');
+$avatar_r2_bucket = getenv('AVATAR_R2_BUCKET');
+$avatar_r2_public_domain = getenv('AVATAR_R2_PUBLIC_DOMAIN');
+
 // Autodiscover settings
 // ===
 // Auto-detect HTTPS port =>
