@@ -1,0 +1,123 @@
+/*
+ * CyKrome Workspaces — "Nocturn" dark theme.
+ *
+ * Loaded instead of the stock mailcow-darkmode.css (see base.twig and
+ * js/build/013-mailcow.js). Imports the original file first for full
+ * component coverage (tables, modals, datatables, accordions, ...) then
+ * layers the Nocturn palette and brand type on top. Accent color comes
+ * from cykrome-accent.css (var(--accent) etc.), which is loaded on every
+ * page regardless of theme.
+ */
+
+@import url("mailcow-darkmode.css");
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  background-color: #0a0a0f;
+  color: #e7e8ee;
+  font-family: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+legend,
+.h1, .h2, .h3, .h4, .h5, .h6,
+h1, h2, h3, h4, h5, h6,
+.card-header {
+  font-family: "Space Grotesk", "Manrope", sans-serif;
+  letter-spacing: -0.01em;
+}
+
+.navbar.bg-light {
+  background-color: rgba(13, 14, 20, 0.9) !important;
+  border-color: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(8px);
+}
+
+body, .card, .modal-content, .dropdown-menu {
+  background-color: #0d0e14;
+}
+
+.card {
+  background-color: #14151c;
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.35), 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+.card-header {
+  background-color: transparent;
+  border-color: rgba(255, 255, 255, 0.07);
+  color: #cfd0da;
+}
+
+.modal-content {
+  background-color: #14151c;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+input.form-control, textarea.form-control, .form-select {
+  background-color: rgba(255, 255, 255, 0.035) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #eceef3 !important;
+}
+input.form-control::placeholder, textarea.form-control::placeholder {
+  color: #5c5e6b !important;
+}
+
+.dropdown-menu {
+  background-color: #14151c;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.6);
+}
+.dropdown-item {
+  color: #cfd0da;
+}
+.dropdown-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #f2f2f6 !important;
+}
+
+.list-group-item, .well, pre, .tag-box, .tag-input {
+  background-color: #14151c;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.table, .table-striped > tbody > tr:nth-of-type(odd) > *, tbody tr,
+table.table, .table-secondary, .table-light {
+  color: #dcdde5 !important;
+}
+.table-striped > tbody > tr:nth-of-type(odd) > td,
+.table-striped > tbody > tr:nth-of-type(odd) > th {
+  background-color: rgba(255, 255, 255, 0.025);
+}
+.table-hover > tbody > tr:hover {
+  background-color: rgba(255, 255, 255, 0.045);
+}
+.table-bordered, .table-bordered th, .table-bordered td,
+.table > :not(caption) > * > * {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.mailcow-logo img {
+  filter: drop-shadow(0 0 24px rgba(var(--accent-rgb), 0.3));
+}
+
+/* Glow accents echoing the Nocturn mockup's card halo, kept subtle so it
+   reads on every page rather than only the login screen. */
+body::before {
+  content: "";
+  position: fixed;
+  top: -320px;
+  left: -260px;
+  width: 900px;
+  height: 900px;
+  background: radial-gradient(circle, rgba(var(--accent-rgb), 0.16) 0%, rgba(var(--accent-rgb), 0) 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.overlay {
+  background: #0a0a0f;
+}

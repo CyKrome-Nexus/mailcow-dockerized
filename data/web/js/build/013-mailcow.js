@@ -347,7 +347,7 @@ $(document).ready(function() {
       if ($('#rspamd_logo_sm').length) $('#rspamd_logo_sm').attr('src', '/img/rspamd_logo_dark.png');
       localStorage.setItem('mailcow_theme', 'light');
     }else{
-      $('head').append('<link id="dark-mode-theme" rel="stylesheet" type="text/css" href="/css/themes/mailcow-darkmode.css">');
+      $('head').append('<link id="dark-mode-theme" rel="stylesheet" type="text/css" href="/css/themes/mailcow-nocturn.css">');
       $('#dark-mode-toggle').prop('checked', true);
       $('.main-logo').addClass('d-none');
       $('.main-logo-dark').removeClass('d-none');
@@ -356,6 +356,30 @@ $(document).ready(function() {
       localStorage.setItem('mailcow_theme', 'dark');
     }
   }
+
+  // CyKrome Workspaces accent picker
+  (function () {
+    var VALID = ['violet', 'cyan', 'amber'];
+    function currentAccent() {
+      var stored = localStorage.getItem('mailcow_accent');
+      return VALID.indexOf(stored) !== -1 ? stored : 'violet';
+    }
+    function applyAccent(accent) {
+      if (accent === 'violet') {
+        document.documentElement.removeAttribute('data-accent');
+      } else {
+        document.documentElement.setAttribute('data-accent', accent);
+      }
+      $('.accent-swatch').removeClass('active');
+      $('.accent-swatch[data-accent-value="' + accent + '"]').addClass('active');
+    }
+    applyAccent(currentAccent());
+    $('.accent-swatch').click(function () {
+      var accent = $(this).data('accent-value');
+      localStorage.setItem('mailcow_accent', accent);
+      applyAccent(accent);
+    });
+  })();
 
   // Reveal Password Input
   $(".reveal-password-input").on('click', '.toggle-password', function() {

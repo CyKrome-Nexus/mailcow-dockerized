@@ -1,0 +1,163 @@
+/*
+ * CyKrome Workspaces accent system.
+ *
+ * Defines the brand accent as CSS custom properties and remaps the
+ * handful of Bootstrap (Lumen) rules that hardcode a hex color instead of
+ * reading --bs-success/--bs-primary, so the whole UI (buttons, links,
+ * focus rings, active nav/pagination states, checked switches) follows
+ * whichever accent the user picks. Loaded on every page, in both the
+ * light and Nocturn dark themes.
+ *
+ * The accent choice itself is applied by setting data-accent on <html>
+ * (see base.twig's inline boot script and js/build/013-mailcow.js).
+ */
+
+:root {
+  --accent: #8b5cf6;
+  --accent-rgb: 139, 92, 246;
+  --accent-soft: #a78bfa;
+  --accent-strong: #7c3aed;
+  --accent-glow: rgba(139, 92, 246, 0.35);
+  --accent-glow-strong: rgba(139, 92, 246, 0.55);
+}
+
+html[data-accent="cyan"] {
+  --accent: #06b6d4;
+  --accent-rgb: 6, 182, 212;
+  --accent-soft: #22d3ee;
+  --accent-strong: #0891b2;
+  --accent-glow: rgba(34, 211, 238, 0.32);
+  --accent-glow-strong: rgba(34, 211, 238, 0.5);
+}
+
+html[data-accent="amber"] {
+  --accent: #f59e0b;
+  --accent-rgb: 245, 158, 11;
+  --accent-soft: #fbbf24;
+  --accent-strong: #d97706;
+  --accent-glow: rgba(245, 158, 11, 0.32);
+  --accent-glow-strong: rgba(245, 158, 11, 0.5);
+}
+
+/* Bootstrap utilities that already read --bs-success/--bs-primary */
+:root {
+  --bs-success: var(--accent);
+  --bs-success-rgb: var(--accent-rgb);
+  --bs-primary: var(--accent);
+  --bs-primary-rgb: var(--accent-rgb);
+}
+
+/* Everything below hardcodes a hex value in the compiled Bootstrap CSS
+   instead of reading a variable, so it needs an explicit override. */
+a {
+  color: var(--accent-strong);
+}
+a:hover {
+  color: var(--accent);
+}
+
+.btn-success {
+  color: #fff !important;
+  background-color: var(--accent) !important;
+  border-color: var(--accent) !important;
+}
+.btn-success:hover,
+.btn-check:focus + .btn-success,
+.btn-success:focus {
+  background-color: var(--accent-strong) !important;
+  border-color: var(--accent-strong) !important;
+  box-shadow: 0 0 0 0.25rem rgba(var(--accent-rgb), 0.35) !important;
+}
+.btn-check:checked + .btn-success,
+.btn-check:active + .btn-success,
+.btn-success:active,
+.btn-success.active,
+.show > .btn-success.dropdown-toggle {
+  background-color: var(--accent-strong) !important;
+  border-color: var(--accent-strong) !important;
+}
+.btn-outline-success {
+  color: var(--accent) !important;
+  border-color: var(--accent) !important;
+}
+.btn-outline-success:hover,
+.btn-check:checked + .btn-outline-success,
+.btn-outline-success:active,
+.btn-outline-success.active {
+  color: #fff !important;
+  background-color: var(--accent) !important;
+  border-color: var(--accent) !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--accent-soft) !important;
+  box-shadow: 0 0 0 0.25rem rgba(var(--accent-rgb), 0.25) !important;
+}
+
+.form-check-input:focus {
+  border-color: var(--accent-soft) !important;
+  box-shadow: 0 0 0 0.25rem rgba(var(--accent-rgb), 0.25) !important;
+}
+.form-check-input:checked,
+.form-check-input[type="checkbox"]:indeterminate {
+  background-color: var(--accent) !important;
+  border-color: var(--accent) !important;
+}
+
+.dropdown-item.active,
+.dropdown-item:active {
+  background-color: var(--accent) !important;
+}
+
+.page-item.active .page-link {
+  background-color: var(--accent) !important;
+  border-color: var(--accent-strong) !important;
+}
+
+.nav-item.active,
+.nav-link.active {
+  color: var(--accent) !important;
+}
+
+.progress-bar {
+  background-color: var(--accent);
+}
+
+.spinner-border.text-success,
+.spinner-grow.text-success {
+  color: var(--accent) !important;
+}
+
+/* --- accent picker control (login card + navbar) --- */
+.accent-picker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.accent-picker .accent-picker-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.6;
+  margin-right: 2px;
+}
+.accent-swatch {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 2px rgba(127, 127, 127, 0.25);
+}
+.accent-swatch[data-accent-value="violet"] { background: #8b5cf6; }
+.accent-swatch[data-accent-value="cyan"] { background: #06b6d4; }
+.accent-swatch[data-accent-value="amber"] { background: #f59e0b; }
+.accent-swatch.active {
+  box-shadow: 0 0 0 2px currentColor;
+}

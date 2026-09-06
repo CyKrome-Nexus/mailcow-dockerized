@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 210 40" fill="none" role="img" aria-label="CyKrome Workspaces">
+  <defs>
+    <linearGradient id="cykromeMarkGradient" x1="2" y1="2" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#a78bfa"/>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="34" height="34" rx="9.5" fill="#12121a" stroke="rgba(139,92,246,0.35)"/>
+  <path d="M25 14.5C23.3 12.9 21.2 12 19 12C14.3 12 10.5 15.8 10.5 20.5C10.5 25.2 14.3 29 19 29C21.3 29 23.4 28.1 25 26.4"
+        stroke="url(#cykromeMarkGradient)" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+  <circle cx="26.8" cy="20.5" r="2.3" fill="url(#cykromeMarkGradient)"/>
+  <text x="46" y="19.5" font-family="'Space Grotesk', 'Segoe UI', Arial, sans-serif" font-weight="600" font-size="15.5" letter-spacing="-0.2" fill="#1c1b19">CyKrome</text>
+  <text x="46" y="31" font-family="'Manrope', 'Segoe UI', Arial, sans-serif" font-weight="700" font-size="8.5" letter-spacing="1.6" fill="#6b6d7a">WORKSPACES</text>
+</svg>
