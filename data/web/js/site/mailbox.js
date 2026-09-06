@@ -1030,6 +1030,21 @@ jQuery(function($){
           responsivePriority: 2
         },
         {
+          title: '',
+          data: 'avatar_url',
+          searchable: false,
+          orderable: false,
+          responsivePriority: 3,
+          defaultContent: '',
+          render: function (data, type, row) {
+            if (type !== 'display') return data;
+            if (data) {
+              return '<img src="' + data + '" alt="" style="width:28px;height:28px;border-radius:50%;object-fit:cover;vertical-align:middle;">';
+            }
+            return '<i class="bi bi-person-circle text-muted" style="font-size:1.5rem;vertical-align:middle;"></i>';
+          }
+        },
+        {
           title: lang.username,
           data: 'username',
           responsivePriority: 3,

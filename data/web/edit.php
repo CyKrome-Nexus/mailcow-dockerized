@@ -229,6 +229,8 @@ $js_minifier->add('/web/js/site/edit.js');
 $js_minifier->add('/web/js/site/pwgen.js');
 
 $template_data['result'] = $result;
+global $avatar_r2_public_domain;
+$template_data['avatar_configured'] = !empty($avatar_r2_public_domain);
 $template_data['return_to'] = $_SESSION['return_to'];
 $template_data['lang_user'] = json_encode($lang['user']);
 $template_data['lang_admin'] = json_encode($lang['admin']);

@@ -10,6 +10,26 @@
       {% if mailboxdata.attributes.force_pw_update == '1' %}
         <div class="alert alert-danger">{{ lang.user.force_pw_update|raw }}</div>
       {% endif %}
+      {% if avatar_configured %}
+      <div class="row mb-4">
+        <div class="col-12 d-flex align-items-center" id="avatar-widget">
+          <div id="avatar-preview" class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+               style="width:72px;height:72px;background:#e9ecef;overflow:hidden;{% if avatar_url %}background-image:url('{{ avatar_url }}');background-size:cover;background-position:center;{% endif %}">
+            {% if not avatar_url %}<i class="bi bi-person-fill" style="font-size:2rem;color:#adb5bd;"></i>{% endif %}
+          </div>
+          <div class="ms-3">
+            <div class="mb-1">
+              <button type="button" class="btn btn-sm btn-outline-primary" id="avatar-upload-btn">{{ lang.user.avatar_change|default('Change photo') }}</button>
+              {% if avatar_url %}
+              <button type="button" class="btn btn-sm btn-outline-danger" id="avatar-remove-btn">{{ lang.user.avatar_remove|default('Remove') }}</button>
+              {% endif %}
+            </div>
+            <div class="form-text">{{ lang.user.avatar_hint|default('JPEG, PNG or WebP, up to 5 MB. Shown in your account and in webmail.') }}</div>
+          </div>
+          <input type="file" id="avatar-file-input" accept="image/png,image/jpeg,image/webp" class="d-none">
+        </div>
+      </div>
+      {% endif %}
       <div class="row">
         <div class="col-xl-9 col-lg-7 col-md-12 col-12 d-flex flex-column mb-4">
           {% if not skip_sogo %}

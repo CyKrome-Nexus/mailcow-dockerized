@@ -185,6 +185,11 @@ services:
         - WEBAUTHN_ONLY_TRUSTED_VENDORS=${WEBAUTHN_ONLY_TRUSTED_VENDORS:-n}
         - CLUSTERMODE=${CLUSTERMODE:-}
         - ADDITIONAL_SERVER_NAMES=${ADDITIONAL_SERVER_NAMES:-}
+        - AVATAR_R2_ACCOUNT_ID=${AVATAR_R2_ACCOUNT_ID:-}
+        - AVATAR_R2_ACCESS_KEY_ID=${AVATAR_R2_ACCESS_KEY_ID:-}
+        - AVATAR_R2_SECRET_ACCESS_KEY=${AVATAR_R2_SECRET_ACCESS_KEY:-}
+        - AVATAR_R2_BUCKET=${AVATAR_R2_BUCKET:-}
+        - AVATAR_R2_PUBLIC_DOMAIN=${AVATAR_R2_PUBLIC_DOMAIN:-}
       restart: always
       labels:
         ofelia.enabled: "true"
@@ -200,8 +205,12 @@ services:
             - phpfpm
 
     sogo-mailcow:
-      image: ghcr.io/mailcow/sogo:5.12.10-1
+      build:
+        context: ./data/Dockerfiles/sogo-cykrome
+        args:
+          SOGO_IMAGE_TAG: 5.12.10-1
       environment:
+        - AVATAR_R2_PUBLIC_DOMAIN=${AVATAR_R2_PUBLIC_DOMAIN:-}
         - DBNAME=${DBNAME}
         - DBUSER=${DBUSER}
         - DBPASS=${DBPASS}

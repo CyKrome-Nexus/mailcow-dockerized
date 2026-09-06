@@ -701,4 +701,64 @@ jQuery(function($){
   onVisible("[id^=sync_job_table]", () => draw_sync_job_table());
   onVisible("[id^=app_passwd_table]", () => draw_app_passwd_table());
   onVisible("[id^=recent-logins]", () => last_logins('get'));
+
+  // Avatar upload widget
+  var avatarFileInput = document.getElementById('avatar-file-input');
+  var avatarUploadBtn = document.getElementById('avatar-upload-btn');
+  var avatarRemoveBtn = document.getElementById('avatar-remove-btn');
+  var avatarPreview = document.getElementById('avatar-preview');
+
+  function avatar_set_busy(busy) {
+    if (avatarUploadBtn) avatarUploadBtn.disabled = busy;
+    if (avatarRemoveBtn) avatarRemoveBtn.disabled = busy;
+  }
+
+  if (avatarUploadBtn && avatarFileInput) {
+    avatarUploadBtn.addEventListener('click', function () {
+      avatarFileInput.value = '';
+      avatarFileInput.click();
+    });
+
+    avatarFileInput.addEventListener('change', function () {
+      if (!avatarFileInput.files || !avatarFileInput.files[0]) return;
+      var formData = new FormData();
+      formData.append('action', 'upload');
+      formData.append('avatar', avatarFileInput.files[0]);
+      formData.append('csrf_token', csrf_token);
+
+      avatar_set_busy(true);
+      fetch('/inc/ajax/avatar.php', { method: 'POST', body: formData, credentials: 'same-origin' })
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (data.success) {
+            window.location.reload();
+          } else {
+            alert(data.msg || 'Could not update avatar');
+          }
+        })
+        .catch(function () { alert('Could not update avatar'); })
+        .finally(function () { avatar_set_busy(false); });
+    });
+  }
+
+  if (avatarRemoveBtn) {
+    avatarRemoveBtn.addEventListener('click', function () {
+      var formData = new FormData();
+      formData.append('action', 'remove');
+      formData.append('csrf_token', csrf_token);
+
+      avatar_set_busy(true);
+      fetch('/inc/ajax/avatar.php', { method: 'POST', body: formData, credentials: 'same-origin' })
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (data.success) {
+            window.location.reload();
+          } else {
+            alert(data.msg || 'Could not remove avatar');
+          }
+        })
+        .catch(function () { alert('Could not remove avatar'); })
+        .finally(function () { avatar_set_busy(false); });
+    });
+  }
 });
