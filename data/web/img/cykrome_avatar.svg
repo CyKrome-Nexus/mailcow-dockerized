@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 34 34" fill="none" role="img" aria-label="CyKrome Workspace Avatar">
+  <defs>
+    <linearGradient id="cykromeAvatarGradient" x1="0" y1="0" x2="34" y2="34" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#a78bfa"/>
+    </linearGradient>
+  </defs>
+  <circle cx="17" cy="17" r="16.5" fill="#141520" stroke="rgba(139,92,246,0.35)" stroke-width="1"/>
+  <path d="M22.5 11.5C20.9 10 18.9 9.2 16.8 9.2C12.3 9.2 8.7 12.8 8.7 17.2C8.7 21.6 12.3 25.1 16.8 25.1C19 25.1 21 24.3 22.5 22.7"
+        stroke="url(#cykromeAvatarGradient)" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+  <circle cx="24.2" cy="17.2" r="2.1" fill="url(#cykromeAvatarGradient)"/>
+</svg>

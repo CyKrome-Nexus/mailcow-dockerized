@@ -1,136 +1,201 @@
 {% extends 'base.twig' %}
 
 {% block navbar %}{% endblock %}
+{% block footer %}{% endblock %}
 
-{% block content %}
-<div class="row mb-4" style="margin-top: 60px">
-  <div class="col-12 col-md-7 col-lg-6 col-xl-5 ms-auto me-auto">
+{% block body_content %}
+<div class="login-root">
+  <div class="login-glow-a"></div>
+  <div class="login-glow-b"></div>
+  <div class="login-grid-overlay"></div>
 
-    <div class="card">
-      <div class="card-header d-flex align-items-center text-break">
-        <i class="bi bi-person-fill me-2"></i> {{ lang.login.login_user }}
-        <div class="ms-auto form-check form-switch my-auto d-flex align-items-center">
-          <label class="form-check-label"><i class="bi bi-moon-fill"></i></label>
-          <input class="form-check-input ms-2" type="checkbox" id="dark-mode-toggle">
-        </div>
-        {% if not oauth2_request %}
-        <div class="ms-4 d-grid d-sm-block">
-          <button type="button" {% if available_languages|length == 1 %}disabled="true"{% endif %} class="text-secondary btn p-0 border-0 bg-transparent ms-auto dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <span class="flag-icon flag-icon-{{ mailcow_locale[-2:] }}"></span>
-          </button>
-          <ul class="dropdown-menu ms-auto login">
-            {% for key, val in available_languages %}
-              <li>
-                <a class="dropdown-item {% if mailcow_locale == key %}active{% endif %}" href="?{{ query_string({'lang': key}) }}">
-                  <span class="flag-icon flag-icon-{{ key[-2:] }}"></span>{{ val }}
-                </a>
-              </li>
-            {% endfor %}
-          </ul>
-        </div>
-        {% endif %}
+  <div class="login-card">
+    <div class="login-lockup">
+      <div class="login-mark">
+        <svg width="34" height="34" viewBox="0 0 34 34" fill="none">
+          <defs>
+            <linearGradient id="lg1" x1="0" y1="0" x2="34" y2="34">
+              <stop offset="0%" stop-color="var(--accent)"></stop>
+              <stop offset="100%" stop-color="var(--accent-soft)"></stop>
+            </linearGradient>
+          </defs>
+          <rect x="1" y="1" width="32" height="32" rx="9" fill="#12121a" stroke="rgba(255,255,255,0.08)"></rect>
+          <path d="M22.5 11.5C20.9 10 18.9 9.2 16.8 9.2C12.3 9.2 8.7 12.8 8.7 17.2C8.7 21.6 12.3 25.1 16.8 25.1C19 25.1 21 24.3 22.5 22.7" stroke="url(#lg1)" stroke-width="2.6" stroke-linecap="round" fill="none"></path>
+          <circle cx="24.2" cy="17.2" r="2.1" fill="url(#lg1)"></circle>
+        </svg>
       </div>
-      <div class="card-body">
-        <div class="text-center mailcow-logo mb-4">
-          <img class="main-logo" src="{{ logo|default('/img/cow_mailcow.svg') }}" alt="mailcow">
-          <img class="main-logo-dark" src="{{ logo_dark|default('/img/cow_mailcow.svg') }}" alt="mailcow-logo-dark">
-        </div>
-        {% if ui_texts.ui_announcement_text and ui_texts.ui_announcement_active %}
-        <div class="my-4 alert alert-{{ ui_texts.ui_announcement_type }} rot-enc ui-announcement-alert">{{ ui_texts.ui_announcement_text|rot13 }}</div>
-        {% endif %}
-        <legend>{% if oauth2_request %}{{ lang.oauth2.authorize_app }}{% else %}{{ ui_texts.main_name|raw }}{% endif %}</legend><hr />
-        {% if is_mobileconfig %}
-        <div class="my-4 alert alert-info ">{{ lang.login.mobileconfig_info }}</div>
-        {% endif %}
-        {% if custom_login.force_sso != 1 %}
-        <form method="post" autofill="off">
-          <div class="d-flex mt-3">
-            <label class="visually-hidden" for="login_user">{{ lang.login.username }}</label>
-            <div class="input-group">
-              <div class="input-group-text"><i class="bi bi-person-fill"></i></div>
-              <input name="login_user" autocorrect="off" autocapitalize="none" type="{% if is_mobileconfig %}email{% else %}text{% endif %}" id="login_user" class="form-control" placeholder="{{ lang.login.email }}" required="" autofocus="" autocomplete="username">
-            </div>
-          </div>
-          <div class="d-flex mt-3">
-            <label class="visually-hidden" for="pass_user">{{ lang.login.password }}</label>
-            <div class="input-group">
-              <div class="input-group-text"><i class="bi bi-lock-fill"></i></div>
-              <input name="pass_user" type="password" id="pass_user" class="form-control" placeholder="{{ lang.login.password }}" required="" autocomplete="current-password">
-            </div>
-          </div>
-          <div class="mt-2 text-muted" style="font-size: 0.9rem;">
-            <a href="/reset-password">{{ lang.login.forgot_password }}</a>
-          </div>
-          <div class="d-flex justify-content-between mt-4" style="position: relative">
-            <button type="submit" class="btn btn-xs-lg btn-success w-100 mt-2 mx-auto" style="max-width: 400px;" value="Login">{{ lang.login.login }}</button>
-          </div>
-        </form>
-        <div class="hr-title"><strong>{{ lang.login.other_logins }}</strong></div>
-        {% endif %}
-        <div class="d-flex flex-column align-items-center">
-          {% if has_iam_sso %}
-          <a class="btn btn-xs-lg btn-secondary w-100 mt-2" style="max-width: 400px;" href="/?iam_sso=1"><i class="bi bi-cloud-arrow-up-fill"></i> {{ lang.admin.iam_sso }}</a>
-          {% endif %}
-          {% if custom_login.force_sso != 1 %}
-          <a class="btn btn-xs-lg btn-secondary w-100 mt-2" style="max-width: 400px;" href="#" id="fido2-login"><i class="bi bi-shield-fill-check"></i> {{ lang.login.fido2_webauthn }}</a>
-          {% endif %}
-        </div>
-        {% if login_delay %}
-        <p><div class="my-4 alert alert-info">{{ lang.login.delayed|format(login_delay) }}</b></div></p>
-        {% endif %}
-        <div class="my-4" id="fido2-alerts"></div>
-        {% if not oauth2_request and (mailcow_apps or app_links) and not hide_mailcow_apps %}
-        <legend><i class="bi bi-link-45deg"></i> {{ ui_texts.apps_name|raw }}</legend><hr />
-        <div class="my-2 apps">
-          {% for app in mailcow_apps %}
-            {% if not app.hide %}
-              {% if not skip_sogo or not is_uri('SOGo', app.link) %}
-              <div class="m-2">
-                <a href="{{ app.link }}" role="button" {% if app.description %}title="{{ app.description }}"{% endif %} class="btn btn-primary btn-block">{{ app.name }}</a>
-              </div>
-            {% endif %}
-          {% endif %}
-          {% endfor %}
-          {% for row in app_links %}
-            {% for key, val in row %}
-            {% if not val.hide %}
-              <div class="m-2">
-                <a href="{{ val.link }}" role="button" class="btn btn-primary btn-block">{{ key }}</a>
-              </div>
-            {% endif %}
-            {% endfor %}
-          {% endfor %}
-        </div>
-        <div>
-        </div>
-        {% endif %}
+      <div class="login-wordmark">
+        <div class="name">CyKrome</div>
+        <div class="sub">Workspaces</div>
       </div>
+      {% if not oauth2_request and available_languages|length > 1 %}
+      <div class="ms-auto dropdown">
+        <button type="button" class="btn p-0 border-0 bg-transparent dropdown-toggle text-secondary" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size: 11.5px; opacity: 0.8;">
+          <span class="flag-icon flag-icon-{{ mailcow_locale[-2:] }}"></span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end login" style="background: #14151c; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;">
+          {% for key, val in available_languages %}
+            <li>
+              <a class="dropdown-item {% if mailcow_locale == key %}active{% endif %}" href="?{{ query_string({'lang': key}) }}" style="font-size: 12px; color: #cfd0da;">
+                <span class="flag-icon flag-icon-{{ key[-2:] }} me-2"></span>{{ val }}
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
     </div>
+
+    <h1 class="login-heading">Welcome back</h1>
+    <p class="login-tagline">Sign in to your workspace — mail, calendar and files, kept quiet and in order.</p>
+
+    {% if ui_texts.ui_announcement_text and ui_texts.ui_announcement_active %}
+    <div class="login-alert alert-info rot-enc ui-announcement-alert">{{ ui_texts.ui_announcement_text|rot13 }}</div>
+    {% endif %}
+
+    {% if is_mobileconfig %}
+    <div class="login-alert alert-info">{{ lang.login.mobileconfig_info }}</div>
+    {% endif %}
+
+    {% if login_delay %}
+    <div class="login-alert alert-warning">{{ lang.login.delayed|format(login_delay) }}</div>
+    {% endif %}
+
+    <div id="fido2-alerts"></div>
+
+    {% if custom_login.force_sso != 1 %}
+    <form method="post" autofill="off">
+      <div class="login-field">
+        <label for="login_user">Email address</label>
+        <div class="login-input-wrap">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8b8d9a" stroke-width="1.8"><path d="M3 6.5C3 5.7 3.7 5 4.5 5h15c.8 0 1.5.7 1.5 1.5v11c0 .8-.7 1.5-1.5 1.5h-15A1.5 1.5 0 0 1 3 17.5v-11Z"></path><path d="m4 6.5 8 6.2 8-6.2"></path></svg>
+          <input class="login-input" type="{% if is_mobileconfig %}email{% else %}text{% endif %}" name="login_user" id="login_user" placeholder="you@cykrome.com" required autofocus autocomplete="username" autocorrect="off" autocapitalize="none">
+        </div>
+      </div>
+
+      <div class="login-field">
+        <label for="pass_user">Password</label>
+        <div class="login-input-wrap">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8b8d9a" stroke-width="1.8"><rect x="4.5" y="10.5" width="15" height="9.5" rx="2"></rect><path d="M8 10.5V7.8a4 4 0 0 1 8 0v2.7"></path></svg>
+          <input class="login-input" type="password" name="pass_user" id="pass_user" placeholder="••••••••••••" required autocomplete="current-password">
+        </div>
+      </div>
+
+      <div class="login-row-between">
+        <label class="login-remember" id="remember-label">
+          <input type="checkbox" name="remember_device" id="remember_device" style="display: none;" checked>
+          <div class="login-checkbox" id="remember-checkbox-ui">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0a0a0f" stroke-width="3.4"><path d="m4 12 6 6L20 6"></path></svg>
+          </div>
+          <span>Remember this device</span>
+        </label>
+        <a class="login-forgot" href="/reset-password">Forgot password?</a>
+      </div>
+
+      <button type="submit" class="login-btn-primary">Sign in</button>
+    </form>
+    {% endif %}
+
+    {% if has_iam_sso or custom_login.force_sso != 1 %}
+    <div class="login-divider-row"><div class="line"></div><span>OR</span><div class="line"></div></div>
+
+    {% if has_iam_sso %}
+    <a href="/?iam_sso=1" class="login-sso-btn">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#cfd0da" stroke-width="1.8"><rect x="3.5" y="3.5" width="17" height="17" rx="4"></rect><path d="M8 12h8M12 8v8"></path></svg>
+      Continue with SSO
+    </a>
+    {% endif %}
+
+    {% if custom_login.force_sso != 1 %}
+    <a href="#" id="fido2-login" class="login-sso-btn {% if has_iam_sso %}mt-2{% endif %}">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#cfd0da" stroke-width="1.8"><rect x="5" y="11" width="14" height="10" rx="2"></rect><circle cx="12" cy="16" r="1.5"></circle><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>
+      {{ lang.login.fido2_webauthn|default('Sign in with Security Key') }}
+    </a>
+    {% endif %}
+    {% endif %}
 
     {% if custom_login.hide_admin_quicklink != 1 or custom_login.hide_domainadmin_quicklink != 1 %}
-    <p class="text-center mt-3 text-muted" style="font-size: 0.9rem;">
-      {{ lang.login.login_linkstext }}<br>
-      {% if custom_login.hide_admin_quicklink != 1 %}<a href="/admin">{{ lang.login.login_admintext }}</a>{% endif %}
-      {% if custom_login.hide_admin_quicklink != 1 and custom_login.hide_domainadmin_quicklink != 1 %}|{% endif %}
-      {% if custom_login.hide_domainadmin_quicklink != 1 %}<a href="/domainadmin">{{ lang.login.login_domainadmintext }}</a>{% endif %}
-    </p>
+    <div class="login-role-links">
+      {% if custom_login.hide_admin_quicklink != 1 %}<a href="/admin">Admin Panel</a>{% endif %}
+      {% if custom_login.hide_admin_quicklink != 1 and custom_login.hide_domainadmin_quicklink != 1 %}<span>·</span>{% endif %}
+      {% if custom_login.hide_domainadmin_quicklink != 1 %}<a href="/domainadmin">Domain Admin</a>{% endif %}
+    </div>
     {% endif %}
   </div>
-</div>
-{% if not oauth2_request and ui_texts.help_text %}
-<div class="row">
-  <div class="col-12 col-md-7 col-lg-6 col-xl-5 ms-auto me-auto">
-    <div class="card">
-      <div class="card-header">
-        <a class="btn btn-link" data-bs-toggle="collapse" href="#collapse1"><i class="bi bi-patch-question-fill"></i> {{ lang.start.help }}</a>
-      </div>
-      <div id="collapse1" class="card-collapse collapse">
-        <div class="card-body">
-          <p>{{ ui_texts.help_text|raw }}</p>
-        </div>
-      </div>
-    </div>
+
+  <div class="login-theme-picker">
+    <span class="label">Accent</span>
+    <button type="button" class="login-swatch-btn active" data-accent-val="violet" style="background: #8b5cf6;" title="Violet">
+      <div class="ring" style="box-shadow: 0 0 0 2px #8b5cf6;"></div>
+    </button>
+    <button type="button" class="login-swatch-btn" data-accent-val="cyan" style="background: #06b6d4;" title="Cyan">
+      <div class="ring" style="box-shadow: 0 0 0 2px #06b6d4;"></div>
+    </button>
+    <button type="button" class="login-swatch-btn" data-accent-val="amber" style="background: #f59e0b;" title="Amber">
+      <div class="ring" style="box-shadow: 0 0 0 2px #f59e0b;"></div>
+    </button>
   </div>
+
+  <div class="login-footer-note">CyKrome Workspaces · Secured session · v2026.1</div>
 </div>
-{% endif %}
+
+<script>
+(function() {
+  // Remember checkbox toggle
+  var remCheck = document.getElementById('remember_device');
+  var remBox = document.getElementById('remember-checkbox-ui');
+  var remLabel = document.getElementById('remember-label');
+  if (remCheck && remBox && remLabel) {
+    remLabel.addEventListener('click', function(e) {
+      e.preventDefault();
+      remCheck.checked = !remCheck.checked;
+      if (remCheck.checked) {
+        remBox.classList.remove('unchecked');
+      } else {
+        remBox.classList.add('unchecked');
+      }
+    });
+  }
+
+  // Accent switcher logic
+  var ACCENTS = {
+    violet: { hex: '#8b5cf6', soft: '#a78bfa', glow: 'rgba(139,92,246,0.35)', glowStrong: 'rgba(139,92,246,0.55)' },
+    cyan:   { hex: '#06b6d4', soft: '#22d3ee', glow: 'rgba(34,211,238,0.32)',  glowStrong: 'rgba(34,211,238,0.5)' },
+    amber:  { hex: '#f59e0b', soft: '#fbbf24', glow: 'rgba(245,158,11,0.32)',  glowStrong: 'rgba(245,158,11,0.5)' }
+  };
+
+  function setAccent(key) {
+    var data = ACCENTS[key] || ACCENTS.violet;
+    if (key === 'violet') {
+      document.documentElement.removeAttribute('data-accent');
+    } else {
+      document.documentElement.setAttribute('data-accent', key);
+    }
+    document.documentElement.style.setProperty('--accent', data.hex);
+    document.documentElement.style.setProperty('--accent-soft', data.soft);
+    document.documentElement.style.setProperty('--accent-glow', data.glow);
+    document.documentElement.style.setProperty('--accent-glow-strong', data.glowStrong);
+    try { localStorage.setItem('mailcow_accent', key); } catch(e){}
+
+    document.querySelectorAll('.login-swatch-btn').forEach(function(btn) {
+      if (btn.getAttribute('data-accent-val') === key) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+  }
+
+  var saved = 'violet';
+  try { saved = localStorage.getItem('mailcow_accent') || 'violet'; } catch(e){}
+  setAccent(saved);
+
+  document.querySelectorAll('.login-swatch-btn').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      setAccent(this.getAttribute('data-accent-val'));
+    });
+  });
+})();
+</script>
 {% endblock %}

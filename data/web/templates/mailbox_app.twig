@@ -1,0 +1,443 @@
+{% extends 'base.twig' %}
+
+{% block navbar %}{% endblock %}
+{% block footer %}{% endblock %}
+
+{% block body_content %}
+<link rel="stylesheet" href="/css/cykrome-mailbox.css?v={{ 'now'|date('U') }}">
+<style>
+/* Scoped Notification Flyout & Topbar Fixes */
+.mailbox-top-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+  width: auto !important;
+  justify-content: flex-end !important;
+  flex-shrink: 0 !important;
+}
+.mailbox-notifications-menu {
+  position: absolute !important;
+  top: 52px !important;
+  right: 24px !important;
+  width: 320px !important;
+  max-width: calc(100vw - 32px) !important;
+  background: #14151c !important;
+  border: 1px solid rgba(255, 255, 255, 0.09) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.02) !important;
+  z-index: 100 !important;
+  display: none;
+  overflow: hidden !important;
+}
+.mailbox-notifications-menu.open {
+  display: block !important;
+  animation: menuIn 0.15s ease-out !important;
+}
+.mailbox-notifications-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 12px 14px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07) !important;
+}
+.mailbox-notifications-title {
+  font-family: 'Space Grotesk', -apple-system, sans-serif !important;
+  font-size: 13.5px !important;
+  font-weight: 700 !important;
+  color: #f4f4f7 !important;
+}
+.mailbox-notifications-mark-read {
+  background: transparent !important;
+  border: none !important;
+  font-size: 11.5px !important;
+  font-weight: 600 !important;
+  color: var(--accent-soft, #a78bfa) !important;
+  cursor: pointer !important;
+  padding: 3px 7px !important;
+  border-radius: 6px !important;
+  font-family: inherit !important;
+  transition: background-color 0.15s !important;
+}
+.mailbox-notifications-mark-read:hover {
+  background: rgba(255, 255, 255, 0.06) !important;
+}
+.mailbox-notifications-list {
+  max-height: 330px !important;
+  overflow-y: auto !important;
+}
+.mailbox-notification-item {
+  display: flex !important;
+  gap: 11px !important;
+  padding: 11px 14px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04) !important;
+  cursor: pointer !important;
+  transition: background-color 0.15s !important;
+  align-items: flex-start !important;
+}
+.mailbox-notification-item:last-child {
+  border-bottom: none !important;
+}
+.mailbox-notification-item:hover {
+  background: rgba(255, 255, 255, 0.04) !important;
+}
+.mailbox-notification-item.unread {
+  background: rgba(139, 92, 246, 0.06) !important;
+}
+.mailbox-notification-icon {
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: var(--accent-soft, #a78bfa) !important;
+  margin-top: 1px !important;
+}
+.mailbox-notification-icon.security {
+  background: rgba(16, 185, 129, 0.12) !important;
+  color: #10b981 !important;
+}
+.mailbox-notification-icon.storage {
+  background: rgba(245, 158, 11, 0.12) !important;
+  color: #f59e0b !important;
+}
+.mailbox-notification-content {
+  flex: 1 !important;
+  min-width: 0 !important;
+}
+.mailbox-notification-top {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 6px !important;
+  margin-bottom: 2px !important;
+}
+.mailbox-notification-subject {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: #eceef3 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+.mailbox-notification-item.unread .mailbox-notification-subject {
+  font-weight: 700 !important;
+  color: #ffffff !important;
+}
+.mailbox-notification-time {
+  font-size: 10px !important;
+  color: #64748b !important;
+  flex-shrink: 0 !important;
+}
+.mailbox-notification-desc {
+  font-size: 11px !important;
+  color: #8b8d9a !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  line-height: 1.35 !important;
+}
+.mailbox-notifications-empty {
+  padding: 32px 16px !important;
+  text-align: center !important;
+  color: #6b6d7a !important;
+  font-size: 12.5px !important;
+}
+.mailbox-notifications-footer {
+  padding: 9px 14px !important;
+  background: rgba(0, 0, 0, 0.18) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+  text-align: center !important;
+}
+.mailbox-notifications-settings-link {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  color: #8b8d9a !important;
+  text-decoration: none !important;
+}
+.mailbox-notifications-settings-link:hover {
+  color: var(--accent-soft, #a78bfa) !important;
+}
+.mailbox-dot-badge.hidden {
+  display: none !important;
+}
+.mailbox-account-menu {
+  position: absolute !important;
+  top: 52px !important;
+  right: 16px !important;
+  display: none;
+  z-index: 100 !important;
+}
+.mailbox-account-menu.open {
+  display: block !important;
+}
+</style>
+<meta name="csrf-token" id="csrf-token-meta" content="{{ csrf_token }}">
+
+<div class="mailbox-app">
+  <!-- top bar -->
+  <header class="mailbox-topbar">
+    <a href="/mailbox" class="mailbox-lockup">
+      <svg width="26" height="26" viewBox="0 0 34 34" fill="none">
+        <defs>
+          <linearGradient id="lgm" x1="0" y1="0" x2="34" y2="34">
+            <stop offset="0%" stop-color="var(--accent)"></stop>
+            <stop offset="100%" stop-color="var(--accent-soft)"></stop>
+          </linearGradient>
+        </defs>
+        <rect x="1" y="1" width="32" height="32" rx="9" fill="#16171f" stroke="rgba(255,255,255,0.08)"></rect>
+        <path d="M22.5 11.5C20.9 10 18.9 9.2 16.8 9.2C12.3 9.2 8.7 12.8 8.7 17.2C8.7 21.6 12.3 25.1 16.8 25.1C19 25.1 21 24.3 22.5 22.7" stroke="url(#lgm)" stroke-width="2.6" stroke-linecap="round" fill="none"></path>
+        <circle cx="24.2" cy="17.2" r="2.1" fill="url(#lgm)"></circle>
+      </svg>
+      <div>
+        <div class="name">CyKrome</div>
+        <div class="sub">Workspaces</div>
+      </div>
+    </a>
+
+    {% if is_admin and all_mailboxes|length > 0 %}
+      <div class="mailbox-switcher-wrap" title="Switch active mailbox">
+        <span class="mailbox-switcher-label">Mailbox:</span>
+        <div class="mailbox-select-container">
+          <select id="mailbox-select" class="mailbox-select" onchange="window.location.href='/mailbox?user=' + encodeURIComponent(this.value)">
+            {% for mb in all_mailboxes %}
+              <option value="{{ mb.username }}" {% if mb.username == username %}selected{% endif %}>
+                {{ mb.name|default(mb.username) }} ({{ mb.username }})
+              </option>
+            {% endfor %}
+          </select>
+          <svg class="mailbox-select-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="mailbox-search-wrap">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8b8d9a" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>
+      <input class="mailbox-search-input" id="mailbox-search" type="text" placeholder="Search mail by sender, subject, or keyword" autocomplete="off">
+    </div>
+
+    <div class="mailbox-top-actions">
+      <button class="mailbox-icon-btn" id="mailbox-notifications-btn" title="Notifications" type="button">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 8a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6Z"></path><path d="M10 20a2 2 0 0 0 4 0"></path></svg>
+        <div class="mailbox-dot-badge hidden" id="mailbox-notifications-badge"></div>
+      </button>
+
+      <button class="mailbox-avatar-btn" id="mailbox-avatar-btn" title="Account Menu ({{ display_name }})" type="button">
+        {% if avatar_url %}
+          <img src="{{ avatar_url }}" alt="{{ display_name }}" class="mailbox-avatar-img">
+        {% else %}
+          <svg width="34" height="34" viewBox="0 0 34 34" fill="none" class="mailbox-avatar-svg" role="img" aria-label="{{ display_name }}">
+            <defs>
+              <linearGradient id="cykTopAvatarGrad" x1="0" y1="0" x2="34" y2="34" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="var(--accent, #8b5cf6)"></stop>
+                <stop offset="100%" stop-color="var(--accent-soft, #a78bfa)"></stop>
+              </linearGradient>
+            </defs>
+            <circle cx="17" cy="17" r="16.5" fill="#141520" stroke="rgba(255,255,255,0.12)" stroke-width="1"></circle>
+            <path d="M22.5 11.5C20.9 10 18.9 9.2 16.8 9.2C12.3 9.2 8.7 12.8 8.7 17.2C8.7 21.6 12.3 25.1 16.8 25.1C19 25.1 21 24.3 22.5 22.7" stroke="url(#cykTopAvatarGrad)" stroke-width="2.6" stroke-linecap="round"></path>
+            <circle cx="24.2" cy="17.2" r="2.1" fill="url(#cykTopAvatarGrad)"></circle>
+          </svg>
+        {% endif %}
+      </button>
+    </div>
+
+    <!-- notifications dropdown menu -->
+    <div class="mailbox-notifications-menu" id="mailbox-notifications-menu" style="display: none;">
+      <div class="mailbox-notifications-header">
+        <div class="mailbox-notifications-title">Notifications</div>
+        <button type="button" class="mailbox-notifications-mark-read" id="mailbox-notifications-mark-all">Mark all read</button>
+      </div>
+      <div class="mailbox-notifications-list" id="mailbox-notifications-list">
+        <!-- populated dynamically -->
+      </div>
+      <div class="mailbox-notifications-footer">
+        <a href="/user" class="mailbox-notifications-settings-link">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+          Notification preferences
+        </a>
+      </div>
+    </div>
+
+    <!-- account dropdown menu -->
+    <div class="mailbox-account-menu" id="mailbox-account-menu" style="display: none;">
+      <div class="who">
+        <div class="a">
+          {% if avatar_url %}
+            <img src="{{ avatar_url }}" alt="{{ display_name }}" class="mailbox-avatar-img">
+          {% else %}
+            <svg width="38" height="38" viewBox="0 0 34 34" fill="none" class="mailbox-avatar-svg" role="img" aria-label="{{ display_name }}">
+              <defs>
+                <linearGradient id="cykMenuAvatarGrad" x1="0" y1="0" x2="34" y2="34" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="var(--accent, #8b5cf6)"></stop>
+                  <stop offset="100%" stop-color="var(--accent-soft, #a78bfa)"></stop>
+                </linearGradient>
+              </defs>
+              <circle cx="17" cy="17" r="16.5" fill="#141520" stroke="rgba(255,255,255,0.12)" stroke-width="1"></circle>
+              <path d="M22.5 11.5C20.9 10 18.9 9.2 16.8 9.2C12.3 9.2 8.7 12.8 8.7 17.2C8.7 21.6 12.3 25.1 16.8 25.1C19 25.1 21 24.3 22.5 22.7" stroke="url(#cykMenuAvatarGrad)" stroke-width="2.6" stroke-linecap="round"></path>
+              <circle cx="24.2" cy="17.2" r="2.1" fill="url(#cykMenuAvatarGrad)"></circle>
+            </svg>
+          {% endif %}
+        </div>
+        <div style="min-width: 0;">
+          {% if is_admin %}
+            <div class="mailbox-admin-badge">Admin System View</div>
+          {% endif %}
+          <div class="name">{{ display_name }}</div>
+          <div class="email">{{ username }}</div>
+        </div>
+      </div>
+
+      <div class="mailbox-menu-label">Appearance · Accent color</div>
+      <div class="mailbox-accent-row">
+        <button type="button" class="mailbox-swatch-btn active" data-accent-val="violet" style="background: #8b5cf6;" title="Violet">
+          <div class="ring" style="box-shadow: 0 0 0 2px #8b5cf6;"></div>
+        </button>
+        <button type="button" class="mailbox-swatch-btn" data-accent-val="cyan" style="background: #06b6d4;" title="Cyan">
+          <div class="ring" style="box-shadow: 0 0 0 2px #06b6d4;"></div>
+        </button>
+        <button type="button" class="mailbox-swatch-btn" data-accent-val="amber" style="background: #f59e0b;" title="Amber">
+          <div class="ring" style="box-shadow: 0 0 0 2px #f59e0b;"></div>
+        </button>
+      </div>
+
+      {% if is_admin %}
+        <a href="/admin" class="mailbox-menu-item">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect></svg>
+          Admin control panel
+        </a>
+      {% endif %}
+
+      <a href="/user" class="mailbox-menu-item">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.9 2.9l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V21a2 2 0 1 1-4 0v-.2a1.7 1.7 0 0 0-1.1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.9-2.9l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H3a2 2 0 1 1 0-4h.2a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.9-2.9l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.6V3a2 2 0 1 1 4 0v.2a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.9 2.9l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.6 1H21a2 2 0 1 1 0 4h-.2a1.7 1.7 0 0 0-1.6 1Z"></path></svg>
+        Account settings
+      </a>
+
+      <a href="#" onclick="logout.submit(); return false;" class="mailbox-menu-item danger">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3"></path><path d="M16 17l5-5-5-5M21 12H9"></path></svg>
+        Sign out
+      </a>
+    </div>
+  </header>
+
+  <!-- body layout -->
+  <div class="mailbox-body">
+    <!-- sidebar -->
+    <aside class="mailbox-sidebar">
+      <button class="mailbox-compose-btn" id="mailbox-compose-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0a0a0f" stroke-width="2.4"><path d="M12 5v14M5 12h14"></path></svg>
+        Compose
+      </button>
+
+      <div class="mailbox-nav-list">
+        <div class="mailbox-nav-item active" data-folder="inbox">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h16v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5Z"></path><path d="m4 5 8 7 8-7"></path></svg>
+          Inbox <span class="count" id="count-inbox"></span>
+        </div>
+        <div class="mailbox-nav-item" data-folder="sent">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12 20 4l-6 16-3-7-7-1Z"></path></svg>
+          Sent
+        </div>
+        <div class="mailbox-nav-item" data-folder="drafts">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16v13H4z"></path><path d="m4 7 8-4 8 4"></path></svg>
+          Drafts <span class="count" id="count-drafts"></span>
+        </div>
+        <div class="mailbox-nav-item" data-folder="archive">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="4.5" width="17" height="4" rx="1"></rect><path d="M5 8.5V18a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 18V8.5"></path><path d="M10 12.5h4"></path></svg>
+          Archive
+        </div>
+        <div class="mailbox-nav-item" data-folder="trash">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16"></path><path d="M6 7V5.5A1.5 1.5 0 0 1 7.5 4h9A1.5 1.5 0 0 1 18 5.5V7"></path><path d="M6.5 7 7 19a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l.5-12"></path></svg>
+          Trash
+        </div>
+        <div class="mailbox-nav-item" data-folder="spam">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8.5"></circle><path d="M12 7.5V13l3.3 2"></path></svg>
+          Spam <span class="count" id="count-spam"></span>
+        </div>
+      </div>
+
+      <div class="mailbox-nav-section-label">Labels</div>
+      <div class="mailbox-nav-list">
+        <div class="mailbox-nav-item" data-filter="clients"><div class="mailbox-folder-dot" style="background:#22d3ee"></div>Clients</div>
+        <div class="mailbox-nav-item" data-filter="invoices"><div class="mailbox-folder-dot" style="background:#f59e0b"></div>Invoices</div>
+        <div class="mailbox-nav-item" data-filter="travel"><div class="mailbox-folder-dot" style="background:#a78bfa"></div>Travel</div>
+      </div>
+
+      <div class="mailbox-storage">
+        <div class="mailbox-storage-bar"><div class="mailbox-storage-bar-fill" id="mailbox-storage-bar-fill" style="width: {{ percent_used }}%;"></div></div>
+        <div class="mailbox-storage-text" id="mailbox-storage-text">{{ storage_text }}</div>
+      </div>
+    </aside>
+
+    <!-- list column -->
+    <div class="mailbox-list-col">
+      <div class="mailbox-list-header">
+        <h2 id="mailbox-folder-title">Inbox</h2>
+        <div class="actions">
+          <button class="mailbox-icon-btn" id="mailbox-list-refresh" title="Refresh folder">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"></path><path d="M16 21h5v-5"></path></svg>
+          </button>
+        </div>
+      </div>
+      <div class="mailbox-email-list" id="mailbox-email-list">
+        <div class="mailbox-loading-state">
+          <div class="mailbox-spinner"></div>
+          <span>Synchronizing with Dovecot IMAP…</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- reading pane -->
+    <main class="mailbox-reading-pane" id="mailbox-reading-pane">
+      <div class="mailbox-empty-state">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
+        <p>Select an email to view details</p>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- compose modal -->
+<div class="mailbox-compose-overlay" id="mailbox-compose-overlay">
+  <div class="mailbox-compose-modal">
+    <div class="mailbox-compose-header">
+      <h3>New Message</h3>
+      <button class="mailbox-icon-btn" id="mailbox-compose-close" title="Close">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+      </button>
+    </div>
+    <div class="mailbox-compose-body">
+      <div class="mailbox-compose-field">
+        <label for="compose-to">To</label>
+        <input type="email" id="compose-to" placeholder="recipient@example.com" required>
+      </div>
+      <div class="mailbox-compose-field">
+        <label for="compose-subject">Subject</label>
+        <input type="text" id="compose-subject" placeholder="Subject">
+      </div>
+      <textarea class="mailbox-compose-textarea" id="compose-body" placeholder="Write your message…"></textarea>
+    </div>
+    <div class="mailbox-compose-footer">
+      <button class="mailbox-btn-secondary" id="mailbox-compose-discard">Discard</button>
+      <button class="mailbox-btn-primary" id="mailbox-compose-send">Send Message</button>
+    </div>
+  </div>
+</div>
+
+<!-- toast notification element -->
+<div class="mailbox-toast" id="mailbox-toast"></div>
+
+<!-- hidden context configuration -->
+<div id="mailbox-config"
+     data-user="{{ username }}"
+     data-role="{{ role }}"
+     data-is-admin="{{ is_admin ? 'true' : 'false' }}"
+     data-csrf="{{ csrf_token }}"
+     style="display:none;"></div>
+
+<script src="/js/mailbox_app.js?v={{ 'now'|date('U') }}"></script>
+{% endblock %}

@@ -23,4 +23,6 @@ else
   echo "[avatar-cdn] AVATAR_R2_PUBLIC_DOMAIN not set or Gravatar.service.js not found — leaving SOGo's default Gravatar URL in place"
 fi
 
+/patch-branding.sh true
+
 exec /docker-entrypoint.sh "$@"
